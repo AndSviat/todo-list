@@ -1,7 +1,7 @@
 import './styles.sass';
 import { TodoList } from './todo-list/todo-list';
-import { EventEmitter } from './todo-list/event-emitter';
-import { Store } from './todo-list/store';
+import { EventEmitter } from './todo-list/event-emitter/event-emitter';
+import { Store } from './todo-list/store/store';
 
 const eventEmitter = new EventEmitter();
 eventEmitter.on('addTodoListBtnActive', showAddTodoListBtn);

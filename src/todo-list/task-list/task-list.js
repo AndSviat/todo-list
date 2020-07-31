@@ -57,7 +57,6 @@ export class TaskList {
     changeTaskDescription(event) {
         console.log('click inside changeTaskDescription');
         const target = event.target;
-        console.log(target.tagName, target.type);
         if (target.tagName === 'LABEL' || target.tagName === 'INPUT' && target.type === 'checkbox') return;
 
         console.log('clicked inside changeTaskDescription, tag and target', target.tagName, target);

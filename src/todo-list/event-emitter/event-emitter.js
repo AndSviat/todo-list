@@ -8,7 +8,6 @@ export class EventEmitter {
             this.events[event] = [];
         }
         this.events[event].push(func);
-        // console.log(this.events);
     }
 
     emit(event, payload) {
