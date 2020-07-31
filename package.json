@@ -6,7 +6,7 @@
   "license": "MIT",
   "scripts": {
     "start": "webpack-dev-server",
-    "test": "mocha"
+    "test": "mocha --config ./config/mocha.json"
   },
   "devDependencies": {
     "@babel/core": "^7.10.5",

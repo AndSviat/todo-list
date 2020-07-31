@@ -9,7 +9,7 @@ module.exports = merge(commonConfig, {
         contentBase: './dist',
         watchContentBase: true,
         hot: true,
-        open: true
+        open: false
     },
     plugins: [
         new webpack.HotModuleReplacementPlugin()

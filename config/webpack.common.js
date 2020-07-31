@@ -22,12 +22,18 @@ module.exports = {
             {
                 test: /.(css|sass|scss)$/,
                 use: ['style-loader', 'css-loader', 'sass-loader']
+            },
+            {
+                test: /.html$/,
+                use: ['html-loader']
             }
         ]
     },
     plugins: [
         new HtmlWebpackPlugin({
-            title: 'TodoList'
+            title: 'TodoList',
+            template: path.resolve('src', 'index.html'),
+            favicon: path.resolve('src', 'favicon.ico')
         })
     ]
 };
