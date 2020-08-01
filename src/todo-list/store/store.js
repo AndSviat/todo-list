@@ -1,67 +1,85 @@
+import { generateId } from '../helpers/helpers';
+
 /**
- * Saves the new application state in the local storage.
+ * Saves, updates, and deletes parts of the application state in the local storage.
+ * Stores internally the state in the db property.
  */
 export class Store {
     constructor(eventEmitter) {
-        this.db = this.getData() || {
-            addTodoListBtn: true
-        };
+        this.db = this.getExistingDatabase() || this.createDatabase();
         this.eventEmitter = eventEmitter;
 
-        this.eventEmitter.on('todoListCreated', this.saveTodoList.bind(this));
-        this.eventEmitter.on('todoListDeleted', this.deleteTodoList.bind(this));
-        this.eventEmitter.on('todoListUpdated', this.saveTodoList.bind(this));
-        this.eventEmitter.on('taskCreated', this.saveTask.bind(this));
-        this.eventEmitter.on('taskUpdated', this.updateTask.bind(this));
-        this.eventEmitter.on('taskDeleted', this.deleteTask.bind(this));
-        this.eventEmitter.on('taskInputCreated', this.saveTaskInput.bind(this));
-        this.eventEmitter.on('taskTextUpdated', this.updateTaskText.bind(this));
+        this.eventEmitter.on('todoListCreated', this.saveTodoList);
+        this.eventEmitter.on('todoListDeleted', this.deleteTodoList);
+        this.eventEmitter.on('todoListUpdated', this.saveTodoList);
+        this.eventEmitter.on('taskCreated', this.saveTask);
+        this.eventEmitter.on('taskActiveStateUpdated', this.updateTaskActiveState);
+        this.eventEmitter.on('taskDeleted', this.deleteTask);
+        this.eventEmitter.on('taskInputCreated', this.saveTaskInput);
+        this.eventEmitter.on('taskTextUpdated', this.updateTaskDescription);
 
-        this.db.addTodoListBtn ? this.eventEmitter.emit('addTodoListBtnActive') : undefined;
+        if (this.db.addTodoListBtn) this.eventEmitter.emit('addTodoListBtnActive');
+    }
+
+    /**
+     * Creates a new database with generic properties.
+     * @return {{todoList: {taskList: [], id: string, title: string}, addTodoListBtn: {active: boolean}}} db - A new database.
+     */
+    createDatabase = () => {
+        return {
+            addTodoListBtn: {
+                active: true
+            },
+            todoList: {
+                id: generateId(),
+                title: 'Todo List',
+                taskList: []
+            }
+        }
     }
 
     /**
      * Obtains the application state from the local storage.
-     * @return {any} application state
+     * @return {{todoList: {taskList: [], id: string, title: string}, addTodoListBtn: {active: boolean}}} - the application state.
      */
-    getData() {
+    getExistingDatabase = () => {
         return JSON.parse(localStorage.getItem('db'));
     }
 
     /**
-     * Saves a new todo list.
-     * @param todoList new todo list
+     * Saves a new todo list and updates the state of the addTodoListBtn to inactive.
+     * @param {{taskList: [], id: string, title: string}} todoList - A new todo list.
      */
-    saveTodoList(todoList) {
+    saveTodoList = todoList => {
         this.db.todoList = todoList;
-        this.db.addTodoListBtn = false;
+        this.db.addTodoListBtn.active = false;
         localStorage.setItem('db', JSON.stringify(this.db));
     }
 
     /**
-     * Deletes todo list.
+     * Deletes todo list from the local storage.
      */
-    deleteTodoList() {
+    deleteTodoList = () => {
         this.db.todoList = null;
-        this.db.addTodoListBtn = true;
-        localStorage.setItem('db', JSON.stringify(this.db));
+        this.db.addTodoListBtn.active = true;
         this.eventEmitter.emit('addTodoListBtnActive');
+        this._save();
     }
 
     /**
      * Saves a new task.
-     * @param payload [object] - the new task object
+     * @param {{id: string, description: string, active: boolean, deleted: boolean, isInput: boolean}} payload - A new task object.
      */
-    saveTask(payload) {
-        this.db.todoList.taskList.push(payload.getTaskObj());
+    saveTask = payload => {
+        this.db.todoList.taskList.push(payload);
         this._save();
     }
 
     /**
      * Updates the task state from active to inactive and vice versa.
-     * @param payload [object] - the task to be updated and the current active or inactive state
+     * @param {{id: string, active: boolean}} payload - The task to be updated and its current active state.
      */
-    updateTask(payload) {
+    updateTaskActiveState = payload => {
         const taskList = this.db.todoList.taskList;
         for (let i = 0; i < taskList.length; i++) {
             if (taskList[i].id === payload.id) {
@@ -73,15 +91,14 @@ export class Store {
     }
 
     /**
-     * Updates the text of the task
-     * @param payload [object] - current task
+     * Updates the description of the task.
+     * @param {{id: string, description: string, isInput: boolean}} payload - The updated task properties.
      */
-    updateTaskText(payload) {
+    updateTaskDescription = payload => {
         const taskList = this.db.todoList.taskList;
         for (let i = 0; i < taskList.length; i++) {
             if (taskList[i].id === payload.id) {
-                console.log('found task by id', payload.id, 'text', payload.text);
-                taskList[i].description = payload.text;
+                taskList[i].description = payload.description;
                 taskList[i].isInput = payload.isInput;
                 break;
             }
@@ -90,11 +107,11 @@ export class Store {
     }
 
     /**
-     * Deletes a task from the local storage. The actual deletion never happens; only the state
+     * Deletes a task from the local storage. The actual deletion never happens - only the state
      * of the task changes: the task becomes deleted and inactive.
-     * @param id [string] - the id of the task
+     * @param {string} id - The id of the task.
      */
-    deleteTask(id) {
+    deleteTask = id => {
         const taskList = this.db.todoList.taskList;
         for (let i = 0; i < taskList.length; i++) {
             if (taskList[i].id === id) {
@@ -109,20 +126,24 @@ export class Store {
     /**
      * Changes the state of a task to input. If the task is in this state, the
      * application renders an input field instead of a span.
-     * @param id [string] the id of the task
+     * @param {{id: string, isInput: boolean}} payload - The task id and the current isInput value.
      */
-    saveTaskInput(id) {
+    saveTaskInput = payload => {
         const taskList = this.db.todoList.taskList;
         for (let i = 0; i < taskList.length; i++) {
-            if (taskList[i].id === id) {
-                taskList[i].isInput = true;
+            if (taskList[i].id === payload.id) {
+                taskList[i].isInput = payload.isInput;
                 break;
             }
         }
         this._save();
     }
 
-    _save() {
+    /**
+     * Saves a new database with the updated state.
+     * @private
+     */
+    _save = () => {
         localStorage.setItem('db', JSON.stringify(this.db));
     }
 }
