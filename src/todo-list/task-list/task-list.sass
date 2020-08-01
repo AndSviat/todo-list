@@ -1,0 +1,83 @@
+.task
+  position: relative
+  margin: 10px 0 14px
+
+  &.completed .task__description
+    text-decoration: line-through
+    color: grey
+
+  & div
+    display: inline-block
+
+  & .form-group__after
+    position: absolute
+    top: 0
+    right: 0
+
+.btn__complete-task, .btn__delete-task, .task__description
+  display: inline-block
+
+.task__description
+  width: 95%
+
+.checkbox
+  display: none
+  cursor: pointer
+
+.form-group label
+  position: relative
+  cursor: pointer
+
+.label__complete-task
+  position: relative
+
+.label__complete-task:before
+  content: ''
+  background: black
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), inset 0 -15px 10px -12px rgba(0, 0, 0, 0.05)
+  padding: 12px
+  display: inline-block
+  position: relative
+  vertical-align: middle
+  cursor: pointer
+  margin-right: 8px
+
+.label__delete-task:before
+  content: ''
+  background: black
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), inset 0 -15px 10px -12px rgba(0, 0, 0, 0.05)
+  padding: 12px
+  display: inline-block
+  position: relative
+  vertical-align: middle
+  cursor: pointer
+  margin-right: 8px
+
+.checkbox__complete-task:checked + .label__complete-task:after
+  content: '✔'
+  display: block
+  position: absolute
+  top: 4px
+  left: 6px
+  color: ghostwhite
+  cursor: pointer
+
+.label__delete-task:after
+  content: '✗'
+  display: block
+  position: absolute
+  top: 4px
+  left: 6px
+  color: #f8f8ff
+  cursor: pointer
+
+.task__description
+  cursor: pointer
+
+  & .input__task-text
+    width: 79.5555555%
+    padding: 6px 7px
+    border: 0
+    border-bottom: 1px solid black
+    background-color: ghostwhite
+    transition: 0.5s
