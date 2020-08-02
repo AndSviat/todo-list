@@ -38,5 +38,8 @@ module.exports = {
             title: 'TodoList Mocha Tests',
             template: path.resolve('test', 'index.spec.html')
         })
-    ]
+    ],
+    devServer: {
+        port: 8081
+    }
 };
