@@ -5,8 +5,8 @@
   "author": "Sviatoslav Andrushko <andsviat@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "webpack-dev-server",
-    "test": "mocha --config ./config/mocha.json"
+    "start": "NODE_ENV=development webpack-dev-server",
+    "test": "NODE_ENV=testing webpack-dev-server --config config/webpack.test.js --port 8081"
   },
   "devDependencies": {
     "@babel/core": "^7.10.5",
@@ -17,7 +17,8 @@
     "css-loader": "^4.0.0",
     "html-loader": "^1.1.0",
     "html-webpack-plugin": "^4.3.0",
-    "mocha": "^8.0.1",
+    "mocha": "^8.1.0",
+    "mocha-loader": "^5.1.2",
     "node-sass": "^4.14.1",
     "sass-loader": "^9.0.2",
     "style-loader": "^1.2.1",
