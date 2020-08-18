@@ -7,3 +7,8 @@ export function generateId() {
 }
 
 export const idRegExp = /({{id}})+/g;
+
+
+export function removeExtraSpaces(text) {
+    return text.trim().replace(/\s+/g, ' ');
+}

@@ -18,7 +18,7 @@ export class Store {
         this.eventEmitter.on('taskInputCreated', this.saveTaskInput);
         this.eventEmitter.on('taskTextUpdated', this.updateTaskDescription);
 
-        if (this.db.addTodoListBtn) this.eventEmitter.emit('addTodoListBtnActive');
+        if (this.db.addTodoListBtn.active) this.eventEmitter.emit('addTodoListBtnActive');
     }
 
     /**

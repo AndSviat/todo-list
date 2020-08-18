@@ -2,11 +2,13 @@ import './styles.sass';
 import { TodoList } from './todo-list/todo-list';
 import { EventEmitter } from './todo-list/event-emitter/event-emitter';
 import { Store } from './todo-list/store/store';
+import { ErrorHandler } from './todo-list/error-handler/error-handler';
 
 const eventEmitter = new EventEmitter();
 eventEmitter.on('addTodoListBtnActive', showAddTodoListBtn);
 
 const store = new Store(eventEmitter);
+const errorHandler = new ErrorHandler(eventEmitter);
 const todoList = store.db.todoList;
 
 if (todoList) {
