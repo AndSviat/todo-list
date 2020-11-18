@@ -1,6 +1,6 @@
 # Todo List
 
-A simple Todo List application built in pure JavaScript.
+A simple Todo List application built in vanilla JavaScript ES2015.
 
 ## Starting the application
 
@@ -66,13 +66,12 @@ Classes:
 * `EventEmitter`, implements the PubSub pattern to let the components communicate with each other
 * `Helpers`, contains the functions that can be used by all classes
 
-The components are loosely coupled, and communicate via publishing events with payload. The components that are interested
-in the events can react accordingly.
+The components are loosely coupled and communicate via publishing events with payload. The components that are interested
+in the events subscribe to those events and react accordingly whenever an event happens.
 
-Task object:
+The `Task` object is responsible for creation of a new Task. Describes the task object:
 
-Task is responsible for creation of a new Task. Describes the task object:
-```ts
+```js
 function Task() {
     const id = 'random alphanumeric sequence'; // String
     let description = ''; // String
@@ -84,6 +83,11 @@ function Task() {
 
 ## Testing
 
-Currently no tests were written.
+To run tests:
+
+```
+yarn test
+# or npm run test
+```
 
 [http://localhost:8080]: http://localhost:8080
